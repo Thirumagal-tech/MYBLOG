@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <!-- Title and Search -->
+    <div class="row my-3 align-items-center">
+
+        <div class="col-md-9">
+            <h2>{{ blog_title|upper }}</h2>
+        </div>
+
+        <div class="col-md-3">
+            <div class="input-group">
+                <input type="text"
+                       class="form-control"
+                       placeholder="Search..."
+                       aria-label="Search">
+
+                <button class="btn btn-primary"
+                        type="button"
+                        id="button-search">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Posts -->
+    <div class="row">
+
+        {% if page_object %}
+
+            {% for post in page_object %}
+
+            <div class="col-md-4 mb-4">
+
+                <div class="card h-100 shadow-sm">
+
+                    <img src="{{ post.image_url }}"
+                         class="card-img-top"
+                         alt="{{ post.title }}"
+                         style="height:250px; object-fit:cover;">
+
+                    <div class="card-body d-flex flex-column">
+
+                        <h5 class="card-title">
+                            {{ post.title }}
+                        </h5>
+
+                        <p class="card-text">
+                            {{ post.content|truncatechars:30 }}
+                        </p>
+
+                        <div class="mt-auto d-flex justify-content-between">
+
+                            <a href="{% url 'blog:detail' slug=post.slug %}">
+                                Read More
+                            </a>
+
+                            <span class="fw-bold">
+                                {{ post.category.name }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="col-12">
+                <p class="text-center text-danger">
+                    Posts not available
+                </p>
+            </div>
+
+        {% endif %}
+
+    </div>
+
+    <!-- Pagination -->
+    {% if page_object.has_other_pages %}
+
+    <div class="row">
+        <div class="col-12">
+
+            <nav aria-label="Page navigation">
+
+                <ul class="pagination justify-content-center">
+
+                    {% if page_object.has_previous %}
+
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ page_object.previous_page_number }}">
+                            Previous
+                        </a>
+                    </li>
+
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Page {{ page_object.number }}
+                            of
+                            {{ page_object.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if page_object.has_next %}
+
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ page_object.next_page_number }}">
+                            Next
+                        </a>
+                    </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </nav>
+
+        </div>
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
